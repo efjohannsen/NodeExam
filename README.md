@@ -7,7 +7,9 @@ Both individual and group work is allowed. No groups larger than 3. But you need
 
 Deadline: Check Wiseflow for when the hand-in deadline is but you can still work on your project up until the exam.
 
-## Hard requirements:  You need to fulfill these requirements to pass the exam:
+## Hard requirements:<br>
+You need to fulfill these requirements to pass the exam:
+
 ### Backend
 Use Express
 Use a database
