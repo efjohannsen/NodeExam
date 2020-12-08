@@ -11,9 +11,9 @@ Deadline: Check Wiseflow for when the hand-in deadline is but you can still work
 You need to fulfill these requirements to pass the exam:
 
 ### Backend
-Use Express
-Use a database
-Implement Auth
+Use Express<br>
+Use a database<br>
+Implement Auth<br>
 
 ### Frontend
 Use plain HTML<br>
