@@ -14,14 +14,14 @@ Use a database
 Implement Auth
 
 ### Frontend
-Use plain HTML
-Use Ajax or Fetch
-Use Sockets
+Use plain HTML<br>
+Use Ajax or Fetch<br>
+Use Sockets<br>
 
 ## Soft requirements:
-You must have a clean code base and your code style should be consistent.
-You must make an attempt at styling your website. Styling frameworks can be used.
-Host your application. If you did not host your application explain during the exam what you tried and why you didn’t.
+You must have a clean code base and your code style should be consistent.<br>
+You must make an attempt at styling your website. Styling frameworks can be used.<br>
+Host your application. If you did not host your application explain during the exam what you tried and why you didn’t.<br>
 
 ## Exam:
 First 5-6 minutes, demo your exam project
