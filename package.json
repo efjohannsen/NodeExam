@@ -1,0 +1,28 @@
+{
+  "name": "NodeExam",
+  "version": "1.0.0",
+  "description": "Exam in Fullstack Node.js Autumn 2020",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/efjohannsen/NodeExam.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/efjohannsen/NodeExam/issues"
+  },
+  "homepage": "https://github.com/efjohannsen/NodeExam#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
