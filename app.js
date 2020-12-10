@@ -29,6 +29,10 @@ app.get("/register", (req, res) => {
     res.sendFile(__dirname + "/public/register/register.html");
 });
 
+app.get("/login", (req, res) => {
+    res.sendFile(__dirname + "/public/login/login.html");
+});
+
 
 
 
@@ -44,31 +48,32 @@ app.post("/register", async (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const user = {name: req.body.username, password: hashedPassword, email: req.body.email};
         users.push(user);
-        res.status(201).send();
+        //res.status(201).send("User successfully registered!");
+        res.redirect("/login");
     } catch {
-        res.status(500).send();
+        res.status(500).send("Server unable to create user!");
     }
 });
 
-app.post("/test/login", async (req, res) => {
-    const user = users.find(user => user.name === req.body.name);
+app.post("/login", async (req, res) => {
+    const user = users.find(user => user.name === req.body.username);
     if(user == null) {
-        return res.status(400).send("Can't find user");
+        return res.status(400).send("Server unable to locate user!");
     }
     try {
         if(await bcrypt.compare(req.body.password, user.password)) {
-            res.send("Succes!");
+            res.send("Log in successful!");
         } else {
-            res.send("Not allowed!")
+            res.status(401).send("Wrong password!");
         };
     } catch {
-        res.status(501).send();
+        res.status(501).send("Server unable to accomodate request!");
     }
 });
 
 
 
-//redirect all non handled endpoints to index.
+//redirect all non-handled endpoints to index.
 app.get("/*", (req , res) => {
     res.redirect("/index");
 });
