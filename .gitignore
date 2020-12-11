@@ -72,6 +72,9 @@ typings/
 .env
 .env.test
 
+# amazon .pem files
+*.pem
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
