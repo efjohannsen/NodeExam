@@ -49,7 +49,7 @@ app.get("/login", (req, res) => {
 
 
 
-app.get("/test", (req, res) => {
+app.get("/test", async (req, res) => {
     const test = await pool.execute('SELECT * FROM users_db');
     res.send(test);
 });
