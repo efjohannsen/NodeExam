@@ -59,8 +59,8 @@ app.post("/register", async (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         await pool.execute('INSERT INTO users_db SET username = ?, password = ?, email = ?', [req.body.username, hashedPassword, req.body.email]);
         res.redirect("/login");
-    } catch(error) {
-        res.status(500).send(error);
+    } catch {
+        res.status(500).send("test");
     }
 });
 
