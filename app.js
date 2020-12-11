@@ -50,7 +50,8 @@ app.get("/login", (req, res) => {
 
 
 app.get("/test", (req, res) => {
-    res.send(await pool.execute('SELECT * FROM users_db'));
+    const test = await pool.execute('SELECT * FROM users_db');
+    res.send(test);
 });
 
 app.post("/register", async (req, res) => {
@@ -64,8 +65,7 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-    res.send(await pool.execute('SELECT password FROM users_db WHERE username = ?', [req.body.username]));
-    //res.send(usertt);
+    //res.send(await pool.execute('SELECT password FROM users_db WHERE username = ?', [req.body.username]));
 });
 
 
