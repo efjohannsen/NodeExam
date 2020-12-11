@@ -15,7 +15,7 @@ app.use(express.urlencoded({extended: true}))
 require("dotenv").config();
 
 //hvis porten er defineret i .env benyttes den ellers sættes den til nedenstående.
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 8080;
 
 //static filer serveres fra public folderen som root.
 app.use(express.static(__dirname + "/public"));
