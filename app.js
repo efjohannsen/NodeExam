@@ -49,35 +49,17 @@ app.get("/login", (req, res) => {
 
 
 
-
-//const users = [];
-
 app.get("/test", (req, res) => {
-    //res.json(users);
     res.send(await pool.execute('SELECT * FROM users_db'));
 });
 
 app.post("/register", async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-//        const user = {name: req.body.username, password: hashedPassword, email: req.body.email};
-//        users.push(user);
-//        res.status(201).send("User successfully registered!");
         await pool.execute('INSERT INTO users_db SET username = ?, password = ?, email = ?', [req.body.username, hashedPassword, req.body.email]);
         res.redirect("/login");
-
-
-        const username = req.body.username;
-        const plainTextPassword = req.body.password;
-        const email = req.body.email;
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(plainTextPassword, saltRounds);
-        await pool.execute('INSERT INTO users SET username = ?, password = ?, email = ?', [username, hashedPassword, email]);
-        return res.redirect("/login");
-
-
-    } catch {
-        res.status(500).send("Server unable to create user!");
+    } catch(error) {
+        res.status(500).send(error);
     }
 });
 
