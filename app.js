@@ -51,7 +51,7 @@ app.get("/login", (req, res) => {
 
 
 //const users = [];
-
+/*
 app.get("/test", (req, res) => {
     //res.json(users);
     //await pool.execute('SELECT * FROM users_db);
@@ -84,7 +84,7 @@ app.post("/login", async (req, res) => {
     } catch {
         res.status(501).send("Server unable to accomodate request!");
     }
-});
+});*/
 
 
 
