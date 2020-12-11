@@ -64,7 +64,8 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-    const user = users.find(user => user.name === req.body.username);
+    const user = await pool.execute('SELECT password FROM users_db WHERE username = ?', [req.body.username]);
+    res.send(user);
     if(user == null) {
         return res.status(400).send("Server unable to locate user!");
     }
