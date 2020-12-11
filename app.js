@@ -49,27 +49,29 @@ app.get("/login", (req, res) => {
 
 
 
-app.get("/test", async (req, res) => {
-    const test = await pool.execute('SELECT * FROM users_db');
-    res.send(test);
+
+//const users = [];
+
+app.get("/test", (req, res) => {
+    //res.json(users);
+    //await pool.execute('SELECT * FROM users_db);
 });
 
 app.post("/register", async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        await pool.execute('INSERT INTO users_db SET username = ?, password = ?, email = ?', [req.body.username, hashedPassword, req.body.email]);
+//        const user = {name: req.body.username, password: hashedPassword, email: req.body.email};
+//        users.push(user);
+//        res.status(201).send("User successfully registered!");
+        await pool.execute('INSERT INTO users_db SET username = ?, password = ?, email = ?', [req.body.username, hashedPassword, req.body.email])
         res.redirect("/login");
     } catch {
-        res.status(500).send("test");
+        res.status(500).send("Server unable to create user!");
     }
 });
 
 app.post("/login", async (req, res) => {
-    //res.send(await pool.execute('SELECT password FROM users_db WHERE username = ?', [req.body.username]));
-});
-
-
-    /*
+    const user = users.find(user => user.name === req.body.username);
     if(user == null) {
         return res.status(400).send("Server unable to locate user!");
     }
@@ -81,7 +83,9 @@ app.post("/login", async (req, res) => {
         };
     } catch {
         res.status(501).send("Server unable to accomodate request!");
-    }*/
+    }
+});
+
 
 
 //redirect all non-handled endpoints to index.
