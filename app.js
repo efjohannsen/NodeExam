@@ -1,6 +1,7 @@
 //importerer moduler.
 const express = require("express");
 const bcrypt = require("bcrypt");
+const mysql = require("mysql2/promise");
 
 //instancierer express.
 const app = express();
@@ -16,6 +17,18 @@ require("dotenv").config();
 
 //hvis porten er defineret i .env benyttes den ellers sættes den til nedenstående.
 const port = process.env.PORT || 8080;
+
+//mysql thread pool
+const pool = mysql.createPool({
+    host        : process.env.DB_HOST,
+    user        : process.env.DB_USER,
+    password    : process.env.DB_PASSWORD,
+    database    : process.env.DB_DATABASE,
+    port        : process.env.DB_PORT,
+    waitForConnections  : true,
+    connectionLimit     : 10,
+    queueLimit          : 0
+});
 
 //static filer serveres fra public folderen som root.
 app.use(express.static(__dirname + "/public"));
