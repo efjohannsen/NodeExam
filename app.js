@@ -66,6 +66,9 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
     const user = await pool.execute('SELECT password FROM users_db WHERE username = ?', [req.body.username]);
     res.send(user);
+});
+
+
     /*
     if(user == null) {
         return res.status(400).send("Server unable to locate user!");
@@ -79,8 +82,6 @@ app.post("/login", async (req, res) => {
     } catch {
         res.status(501).send("Server unable to accomodate request!");
     }*/
-});
-
 
 
 //redirect all non-handled endpoints to index.
