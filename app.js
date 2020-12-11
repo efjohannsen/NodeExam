@@ -1,7 +1,6 @@
 //importerer moduler.
 const express = require("express");
 const bcrypt = require("bcrypt");
-const mysql = require("mysql2/promise");
 
 //instancierer express.
 const app = express();
@@ -16,19 +15,7 @@ app.use(express.urlencoded({extended: true}))
 require("dotenv").config();
 
 //hvis porten er defineret i .env benyttes den ellers sættes den til nedenstående.
-const port = process.env.PORT || 8080;
-
-//mysql thread pool
-const pool = mysql.createPool({
-    host        : process.env.DB_HOST,
-    user        : process.env.DB_USER,
-    password    : process.env.DB_PASSWORD,
-    database    : process.env.DB_DATABASE,
-    port        : process.env.DB_PORT,
-    waitForConnections  : true,
-    connectionLimit     : 10,
-    queueLimit          : 0
-});
+const port = process.env.PORT || 80;
 
 //static filer serveres fra public folderen som root.
 app.use(express.static(__dirname + "/public"));
@@ -50,20 +37,18 @@ app.get("/login", (req, res) => {
 
 
 
-//const users = [];
-/*
+const users = [];
+
 app.get("/test", (req, res) => {
-    //res.json(users);
-    //await pool.execute('SELECT * FROM users_db);
+    res.json(users);
 });
 
 app.post("/register", async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-//        const user = {name: req.body.username, password: hashedPassword, email: req.body.email};
-//        users.push(user);
-//        res.status(201).send("User successfully registered!");
-        await pool.execute('INSERT INTO users_db SET username = ?, password = ?, email = ?', [req.body.username, hashedPassword, req.body.email])
+        const user = {name: req.body.username, password: hashedPassword, email: req.body.email};
+        users.push(user);
+        //res.status(201).send("User successfully registered!");
         res.redirect("/login");
     } catch {
         res.status(500).send("Server unable to create user!");
@@ -84,7 +69,7 @@ app.post("/login", async (req, res) => {
     } catch {
         res.status(501).send("Server unable to accomodate request!");
     }
-});*/
+});
 
 
 
