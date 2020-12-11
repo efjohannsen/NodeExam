@@ -64,8 +64,8 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-    const user = await pool.execute('SELECT password FROM users_db WHERE username = ?', [req.body.username]);
-    res.send(user);
+    res.send(await pool.execute('SELECT password FROM users_db WHERE username = ?', [req.body.username]));
+    //res.send(usertt);
 });
 
 
