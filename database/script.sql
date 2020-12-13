@@ -13,3 +13,14 @@ CREATE TABLE users (
 INSERT INTO users (id, username, password, email) VALUES
     (1, 'John', '123456', '123@gmail.com'),
     (2, 'Jonas', '123', 'abc@gmail.com');
+
+
+
+
+
+
+SHOW DATABASES;
+SHOW TABLES;
+SELECT user FROM user;
+CREATE USER 'user'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON users_db.* TO 'user'@'localhost';

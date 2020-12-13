@@ -1,8 +1,8 @@
-GET http://localhost:8080/test
+GET http://localhost:80/test
 
 ###
 
-POST http://localhost:8080/register
+POST http://localhost:80/register
 Content-Type: application/json
 
 {
@@ -13,10 +13,10 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:8080/login
+POST http://localhost:80/login
 Content-Type: application/json
 
 {
-    "name": "Kyle",
+    "username": "Kyle",
     "password": "1234"
 }

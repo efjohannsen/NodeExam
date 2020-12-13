@@ -1,6 +1,7 @@
 //importerer moduler.
 const express = require("express");
 const bcrypt = require("bcrypt");
+const mysql = require("mysql2/promise");
 
 //instancierer express.
 const app = express();
@@ -9,13 +10,25 @@ const app = express();
 app.use(express.json());
 
 //appen kan parse objektet som strings eller arrays.
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({extended: true}));
 
 //importerer dotenv modulet.
 require("dotenv").config();
 
 //hvis porten er defineret i .env benyttes den ellers sættes den til nedenstående.
 const port = process.env.PORT || 80;
+
+//skaber en thread pool
+const pool = mysql.createPool({
+    host        : process.env.DB_HOST,
+    user        : process.env.DB_USER,
+    password    : process.env.DB_SECRET,
+    database    : process.env.DB_DBNAME,
+    port        : process.env.DB_PORT,
+    waitForConnections  : true,
+    connectionLimit     : 10,
+    queueLimit          : 0
+});
 
 //static filer serveres fra public folderen som root.
 app.use(express.static(__dirname + "/public"));
@@ -33,45 +46,39 @@ app.get("/login", (req, res) => {
     res.sendFile(__dirname + "/public/login/login.html");
 });
 
+//const users = [];
 
-
-
-
-const users = [];
-
-app.get("/test", (req, res) => {
-    res.json(users);
-});
+//app.get("/test", (req, res) => {
+//    res.json(users);
+//});
 
 app.post("/register", async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const user = {name: req.body.username, password: hashedPassword, email: req.body.email};
-        users.push(user);
-        //res.status(201).send("User successfully registered!");
+        await pool.execute("INSERT INTO users SET username = ?, password = ?, email = ?", [req.body.username, hashedPassword, req.body.email]);
         res.redirect("/login");
-    } catch {
-        res.status(500).send("Server unable to create user!");
+    } catch(error) {
+        res.status(500).send(error);
     }
 });
 
 app.post("/login", async (req, res) => {
-    const user = users.find(user => user.name === req.body.username);
-    if(user == null) {
-        return res.status(400).send("Server unable to locate user!");
-    }
     try {
-        if(await bcrypt.compare(req.body.password, user.password)) {
-            res.send("Log in successful!");
+        const userName = req.body.username;
+        const plainTextPassword = req.body.password;
+        const hashedPassword = await pool.execute("SELECT password FROM users WHERE username = ?", [userName]);
+        //not defined || empty array
+        if(hashedPassword[0][0] === undefined || hashedPassword[0][0].length === 0) {
+            res.status(404).send(`User: ${userName} not found!`);
+        } else if (await bcrypt.compare(plainTextPassword, hashedPassword[0][0].password)) {
+            res.redirect("/index");
         } else {
             res.status(401).send("Wrong password!");
-        };
-    } catch {
-        res.status(501).send("Server unable to accomodate request!");
+        }
+    } catch(error) {
+        res.status(500).send(error);
     }
 });
-
-
 
 //redirect all non-handled endpoints to index.
 app.get("/*", (req , res) => {
