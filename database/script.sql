@@ -4,20 +4,23 @@ USE users_db;
 
 CREATE TABLE users (
     id INT(10) NOT NULL AUTO_INCREMENT,
-    username VARCHAR(100) UNIQUE,
-    password CHAR(100),
-    email VARCHAR(100),
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
     PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO users (id, username, password, email) VALUES
-    (1, 'John', '123456', '123@gmail.com'),
-    (2, 'Jonas', '123', 'abc@gmail.com');
+    (1, 'JohnDoe', 'john', 'johndoe@gmail.com');
 
+CREATE TABLE refresh_tokens (
+    token VARCHAR(150) UNIQUE NOT NULL,
+    id INT(10) NOT NULL,
+    FOREIGN KEY (id) REFERENCES users(id)
+);
 
-
-
-
+INSERT INTO refresh_tokens (id, token) VALUES
+    (1, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoicXEiLCJpYXQiOjE2MDgzMDc3ODB9.khCI8J-izc-GHR-6X72Cc8mAri5CPU6hxaMeuJRD48A");
 
 SHOW DATABASES;
 SHOW TABLES;

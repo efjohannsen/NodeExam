@@ -1,22 +1,18 @@
-GET http://34.232.6.92/test
-
-###
-
-POST http://34.232.6.92/register
+POST http://localhost/register
 Content-Type: application/json
 
 {
-    "username": "Kyle",
-    "password": "1234",
+    "username": "qq",
+    "password": "qq",
     "email": "test@test.com"
 }
 
 ###
 
-POST http://34.232.6.92/login
+POST http://localhost/login
 Content-Type: application/json
 
 {
-    "username": "Kyle",
-    "password": "1234"
+    "username": "qq",
+    "password": "qq"
 }
