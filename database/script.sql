@@ -15,7 +15,7 @@ INSERT INTO users (id, username, password, email) VALUES
 
 CREATE TABLE refresh_tokens (
     token VARCHAR(150) UNIQUE NOT NULL,
-    id INT(10) NOT NULL,
+    id INT(10) UNIQUE NOT NULL,
     FOREIGN KEY (id) REFERENCES users(id)
 );
 

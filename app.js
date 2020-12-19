@@ -59,13 +59,13 @@ app.get("/profile", authenticateToken, (req, res) => {
 function authenticateToken(req, res, next) {
     const accessToken = req.cookies.accessToken;
     if(accessToken === undefined) {
-        return res.status(401).send("Access-cookie not found/expired. Please log-in again!");
+        return res.status(401).send("Restricted area. Please log-in!");
     }
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (error, user) => {
         if(error) {
-            return res.sendStatus(403);
+            return res.status(403).send("Accesstoken expired. Please refresh accesstoken!");
         }
-        req.user = user;
+        //req.user = user; //bruges ikke.
         next();
     });
 }
@@ -81,7 +81,7 @@ app.post("/register", authLimiter, async (req, res) => {
     }
 });
 
-//validerer brugernavn og password og skaber dernæst to cookies.
+//validerer brugernavn og password og gemmer dernæst to cookies.
 app.post("/login", authLimiter, async (req, res) => {
     try {
         const userName = req.body.username;
@@ -93,11 +93,11 @@ app.post("/login", authLimiter, async (req, res) => {
             const id = userResult[0][0].id;
             const user = {name: userName};
             const accessToken = generateAccessToken(user);
-            const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+            const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, {expiresIn: "60m"});
             await pool.execute("DELETE FROM refresh_tokens WHERE id = ?", [id]);
             await pool.execute("INSERT INTO refresh_tokens SET id = ?, token = ?", [id, refreshToken]);
             res.cookie("accessToken", accessToken, {httpOnly: true});
-            res.cookie("refreshToken", refreshToken, {maxAge: 1000000, httpOnly: true});
+            res.cookie("refreshToken", refreshToken, {httpOnly: true});
             return res.redirect("/index");
         } else {
             return res.status(401).send("Wrong password!");
@@ -111,15 +111,15 @@ app.post("/login", authLimiter, async (req, res) => {
 app.get("/refreshtoken", async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
     if(refreshToken === undefined) {
-        return res.status(401).send("Refreshtoken is non-existant and cannot be refreshed - log in again!");
+        return res.status(401).send("Refreshtoken is non-existant. Please log-in!");
     }
     const storedToken = await pool.execute("SELECT token FROM refresh_tokens WHERE token = ?", [refreshToken]);
     if(storedToken[0][0] === undefined) {
-        return res.status(403).send("Restricted area!");
+        return res.status(403).send("Restricted area. Please log-in!");
     }
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (error, user) => {
         if(error) {
-            return res.status(403).send("Restricted area!");
+            return res.status(403).send("Refreshtoken not validated/expired. Please log-in!");
         }
         const accessToken = generateAccessToken({name: user.name});
         res.cookie("accessToken", accessToken, {httpOnly: true});
@@ -127,7 +127,7 @@ app.get("/refreshtoken", async (req, res) => {
     });
 });
 
-//function der skaber access tokens med begrænset levetid.
+//function der skaber accesstokens med begrænset levetid.
 function generateAccessToken(user) {
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "15s"});
 }
@@ -139,9 +139,9 @@ app.get("/logout", async (req, res) => {
         await pool.execute("DELETE FROM refresh_tokens WHERE token = ?", [refreshToken]);
         res.clearCookie("refreshToken");
         res.clearCookie("accessToken");
-        return res.status(204).send("You are now logged out!");
+        return res.send("You are now logged out!"); //status(204) giver error ifht. at nå endpoint.
     } else {
-        return res.send("You are not logged in/cookie expired!");
+        return res.send("You are not logged in!");
     }
 });
 
