@@ -55,6 +55,33 @@ app.get("/profile", authenticateToken, (req, res) => {
     return res.sendFile(__dirname + "/public/profile/profile.html");
 });
 
+//change password.
+app.post("/profile", async (req, res) => {
+    const pw1 = req.body.change_pw_1;
+    const pw2 = req.body.change_pw_2;
+    if(pw1 !== pw2) {
+        return res.send("Typed passwords are not identical, please try again!");
+    }
+    const accessToken = req.cookies.accessToken;
+    if(accessToken === undefined) {
+        return res.status(401).send("Restricted area. Please log-in!");
+    }
+    let userName = null;
+    jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (error, user) => {
+        if(error) {
+            return res.send("Accesstoken expired. Please refresh accesstoken to change password!");
+        }
+        userName = user.name;
+    });
+    try {
+        const hashedPassword = await bcrypt.hash(pw1, 10);
+        await pool.execute("UPDATE users SET password = ? WHERE username = ?", [hashedPassword, userName]);
+    } catch {
+        return res.send("Failed to update password!");
+    }
+    return res.redirect("/profile");
+});
+
 //middleware authenticate function.
 function authenticateToken(req, res, next) {
     const accessToken = req.cookies.accessToken;
@@ -65,7 +92,6 @@ function authenticateToken(req, res, next) {
         if(error) {
             return res.status(403).send("Accesstoken expired. Please refresh accesstoken!");
         }
-        //req.user = user; //bruges ikke.
         next();
     });
 }
@@ -98,7 +124,7 @@ app.post("/login", authLimiter, async (req, res) => {
             await pool.execute("INSERT INTO refresh_tokens SET id = ?, token = ?", [id, refreshToken]);
             res.cookie("accessToken", accessToken, {httpOnly: true});
             res.cookie("refreshToken", refreshToken, {httpOnly: true});
-            return res.redirect("/index");
+            return res.redirect("/profile");
         } else {
             return res.status(401).send("Wrong password!");
         }
@@ -129,7 +155,7 @@ app.get("/refreshtoken", async (req, res) => {
 
 //function der skaber accesstokens med begrænset levetid.
 function generateAccessToken(user) {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "15s"});
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "2m"});
 }
 
 //logger brugeren ud og fjerner begge cookies.
@@ -151,7 +177,7 @@ app.get("/*", (req , res) => {
 });
 
 //binder webserver til port.
-app.listen(port, (error)=> {
+app.listen(port, (error) => {
     if(error) {
         console.log(`Server caught an error: ${error}`);
     } else {
