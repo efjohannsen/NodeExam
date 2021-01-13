@@ -5,7 +5,10 @@ const mysql = require("mysql2/promise");
 const jwt = require("jsonwebtoken");
 const authLimiter = require("./util/ratelimiter.js");
 const cookieParser = require("cookie-parser");
+const socket = require("socket.io")(3000);
 require("dotenv").config();
+
+//hvorfor er der * bagefter chat og user request handlers?
 
 //instancierer express.
 const app = express();
@@ -16,7 +19,7 @@ app.use(cookieParser());
 //appen kan håndtere json format.
 app.use(express.json());
 
-//appen kan parse objektet som strings eller arrays.
+//appen kan parse post objekter som strings eller arrays.
 app.use(express.urlencoded({extended: true}));
 
 //static filer serveres fra public folderen som root.
@@ -51,12 +54,17 @@ app.get("/login", (req, res) => {
 });
 
 //nedenstående endpoint kræver authorization.
+app.get("/chat", authenticateToken, (req, res) => {
+    return res.sendFile(__dirname + "/public/chat/chat.html");
+});
+
+//nedenstående endpoint kræver authorization.
 app.get("/profile", authenticateToken, (req, res) => {
     return res.sendFile(__dirname + "/public/profile/profile.html");
 });
 
 //change password.
-app.post("/profile", async (req, res) => {
+app.post("/profile", (req, res) => {
     const pw1 = req.body.change_pw_1;
     const pw2 = req.body.change_pw_2;
     if(pw1 !== pw2) {
@@ -66,20 +74,18 @@ app.post("/profile", async (req, res) => {
     if(accessToken === undefined) {
         return res.status(401).send("Restricted area. Please log-in!");
     }
-    let userName = null;
-    jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (error, user) => {
+    jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, async (error, user) => {
         if(error) {
             return res.send("Accesstoken expired. Please refresh accesstoken to change password!");
         }
-        userName = user.name;
+        try {
+            const hashedPassword = await bcrypt.hash(pw1, 10);
+            await pool.execute("UPDATE users SET password = ? WHERE username = ?", [hashedPassword, user.name]);
+        } catch {
+            return res.send("Failed to update password!");
+        }
+        return res.redirect("/profile");
     });
-    try {
-        const hashedPassword = await bcrypt.hash(pw1, 10);
-        await pool.execute("UPDATE users SET password = ? WHERE username = ?", [hashedPassword, userName]);
-    } catch {
-        return res.send("Failed to update password!");
-    }
-    return res.redirect("/profile");
 });
 
 //middleware authenticate function.
