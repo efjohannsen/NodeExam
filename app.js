@@ -1,17 +1,38 @@
-//importerer moduler.
+//moduler.
+require("dotenv").config();
 const express = require("express");
+const app = express();
 const bcrypt = require("bcrypt");
 const mysql = require("mysql2/promise");
 const jwt = require("jsonwebtoken");
-const authLimiter = require("./util/ratelimiter.js");
+const authLimiter = require("./util/ratelimit/ratelimiter.js");
 const cookieParser = require("cookie-parser");
-const socket = require("socket.io")(3000);
-require("dotenv").config();
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
 
 //hvorfor er der * bagefter chat og user request handlers?
+//npm init med eller uden: -y
+//cookie consent, hvorhenne?
+//hvad har tariq af extensions til node i vscode?
+//sat ekstra / efter public i express.static
+//cloudfare script i chat.html?
 
-//instancierer express.
-const app = express();
+const users = {};
+
+//køres når en user connecter til serveren.
+io.on("connection", socket => {
+    socket.on("new-user", name => {
+        users[socket.id] = name;
+        socket.broadcast.emit("user-connected", name);
+    });
+    socket.on("send-chat-message", message => {
+        socket.broadcast.emit("chat-message", {message: message, name: users[socket.id]});
+    });
+    socket.on("disconnect", () => {
+        socket.broadcast.emit("user-disconnected", users[socket.id])
+        delete users[socket.id];
+    });
+});
 
 //appen kan parse cookies.
 app.use(cookieParser());
@@ -54,7 +75,7 @@ app.get("/login", (req, res) => {
 });
 
 //nedenstående endpoint kræver authorization.
-app.get("/chat", authenticateToken, (req, res) => {
+app.get("/chat", (req, res) => {
     return res.sendFile(__dirname + "/public/chat/chat.html");
 });
 
@@ -183,10 +204,10 @@ app.get("/*", (req , res) => {
 });
 
 //binder webserver til port.
-app.listen(port, (error) => {
+server.listen(port, (error) => {
     if(error) {
         console.log(`Server caught an error: ${error}`);
     } else {
-    console.log(`Server running on port: ${port}`);
+        console.log(`Server running on port: ${port}`);
     }
 });

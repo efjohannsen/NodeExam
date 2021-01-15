@@ -4,19 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatserver</title>
-    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
-    <script defer src="chat-client.js"></script>
     <style>
         body {
             padding: 0;
             margin: 0;
-            display: flex;
+            /*display: flex;*/
             justify-content: center;
         }
 
         #message-container {
-            width: 80%;
-            max-width: 1200px;
+            width: 100%;
+            max-width: 800px;
         }
 
         #message-container div {
@@ -32,8 +30,12 @@
 <body>
     <div id="message-container"></div>
     <form id="send-container">
-        <input type="text" id="message input" placeholder="Your message...">
+        <input type="text" id="message-input" placeholder="Your message...">
         <button type="submit" id="send-button">Send</button>
     </form>
+
+    <!-- script der inkluderer io funktionen i chat-client.js -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="chat-client.js"></script>
 </body>
 </html>
