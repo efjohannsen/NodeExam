@@ -10,12 +10,10 @@ const cookieParser = require("cookie-parser");
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 
-//hvorfor er der * bagefter chat og user request handlers?
-//npm init med eller uden: -y
-//cookie consent, hvorhenne?
+//osana.com
 //hvad har tariq af extensions til node i vscode?
-//sat ekstra / efter public i express.static
-//cloudfare script i chat.html?
+//npm intellisense
+//pm2 restart app.js
 
 const users = {};
 
@@ -60,7 +58,7 @@ app.get("/login", (req, res) => {
 });
 
 //nedenstående endpoint kræver authorization.
-app.get("/chat", (req, res) => {
+app.get("/chat", authenticateToken, (req, res) => {
     return res.sendFile(__dirname + "/public/chat/chat.html");
 });
 

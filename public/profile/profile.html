@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
+    <link type="text/css" rel="stylesheet" href="profile.css">
 </head>
 <body>
     <h1>Profile</h1>
-    <form method="POST" id="change_pw_form">
-        <input id="change_pw_1" name="change_pw_1" type="password" placeholder="Type new password" required></input>
-        <input id="change_pw_2" name="change_pw_2" type="password" placeholder="Repeat new password" required></input>
-        <button id="submit" type="subbmit" name="submit">Change password</button>
-    </form>
+    <div id="content">
+        <label for="change_pw_form">Change user password</label>
+        <form method="POST" id="change_pw_form">
+            <input id="change_pw_1" name="change_pw_1" type="password" placeholder="Type new password" required></input>
+            <input id="change_pw_2" name="change_pw_2" type="password" placeholder="Repeat new password" required></input>
+            <button id="submit" type="subbmit" name="submit">Change password</button>
+        </form>
+    </div>
 </body>
 </html>
