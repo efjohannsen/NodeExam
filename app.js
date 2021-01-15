@@ -3,8 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
-const mysql = require("mysql2/promise");
 const jwt = require("jsonwebtoken");
+const pool = require("./util/mysql/mysql.js");
 const authLimiter = require("./util/ratelimit/ratelimiter.js");
 const cookieParser = require("cookie-parser");
 const server = require("http").createServer(app);
@@ -45,21 +45,6 @@ app.use(express.urlencoded({extended: true}));
 
 //static filer serveres fra public folderen som root.
 app.use(express.static(__dirname + "/public"));
-
-//hvis porten er defineret i .env benyttes den ellers sættes den til nedenstående.
-const port = process.env.PORT || 8080;
-
-//skaber en thread pool.
-const pool = mysql.createPool({
-    host        : process.env.DB_HOST,
-    user        : process.env.DB_USER,
-    password    : process.env.DB_SECRET,
-    database    : process.env.DB_DBNAME,
-    port        : process.env.DB_PORT,
-    waitForConnections  : true,
-    connectionLimit     : 10,
-    queueLimit          : 0
-});
 
 //HTTP request handler for /index.
 app.get("/index", (req, res) => {
@@ -202,6 +187,9 @@ app.get("/logout", async (req, res) => {
 app.get("/*", (req , res) => {
     return res.redirect("/index");
 });
+
+//hvis porten er defineret i .env benyttes den ellers sættes den til nedenstående.
+const port = process.env.PORT || 8080;
 
 //binder webserver til port.
 server.listen(port, (error) => {

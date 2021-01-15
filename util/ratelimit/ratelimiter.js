@@ -6,5 +6,4 @@ const authLimiter = rateLimiter({
     max: 10 //max antal forsøg pr. windowMs.
 });
 
-//eksporterer authLimiter til brug i app.js.
 module.exports = authLimiter;
