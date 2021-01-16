@@ -13,7 +13,7 @@ const io = require("socket.io")(server);
 //osana.com
 //hvad har tariq af extensions til node i vscode?
 //npm intellisense
-//pm2 restart app.js
+//hvorfor starter SQL automatisk på AWS?
 
 const users = {};
 
@@ -57,6 +57,10 @@ app.get("/login", (req, res) => {
     return res.sendFile(__dirname + "/public/login/login.html");
 });
 
+app.get("/restricted", (req, res) => {
+    return res.sendFile(__dirname + "/public/restricted/restricted.html");
+});
+
 //nedenstående endpoint kræver authorization.
 app.get("/chat", authenticateToken, (req, res) => {
     return res.sendFile(__dirname + "/public/chat/chat.html");
@@ -76,7 +80,7 @@ app.post("/profile", (req, res) => {
     }
     const accessToken = req.cookies.accessToken;
     if(accessToken === undefined) {
-        return res.status(401).send("Restricted area. Please log-in!");
+        return res.redirect("/restricted");
     }
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, async (error, user) => {
         if(error) {
@@ -96,7 +100,7 @@ app.post("/profile", (req, res) => {
 function authenticateToken(req, res, next) {
     const accessToken = req.cookies.accessToken;
     if(accessToken === undefined) {
-        return res.status(401).send("Restricted area. Please log-in!");
+        return res.redirect("/restricted");
     }
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (error, user) => {
         if(error) {
@@ -151,7 +155,7 @@ app.get("/refreshtoken", async (req, res) => {
     }
     const storedToken = await pool.execute("SELECT token FROM refresh_tokens WHERE token = ?", [refreshToken]);
     if(storedToken[0][0] === undefined) {
-        return res.status(403).send("Restricted area. Please log-in!");
+        return res.redirect("/restricted");
     }
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (error, user) => {
         if(error) {
@@ -182,8 +186,8 @@ app.get("/logout", async (req, res) => {
 });
 
 //redirect all non-handled endpoints to index.
-app.get("/*", (req , res) => {
-    return res.redirect("/index");
+app.get("/*", (req, res) => {
+    return res.sendFile(__dirname + "/public/notfound/notfound.html");
 });
 
 //hvis porten er defineret i .env benyttes den ellers sættes den til nedenstående.
