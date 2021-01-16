@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link type="text/css" rel="stylesheet" href="register.css">
 </head>
 <body>
-    <form id="registerform" method="POST">
-        <input id="username" type="text" name="username" placeholder="Username..." required></input>
-        <input id="password" type="password" name="password" placeholder="Password..." required></input>
-        <input id="email" type="email" name="email" placeholder="Email..." required></input>
-        <button id="register" type="submit" name="register">Register</button>
-    </form>
+    <h1>Register</h1>
+    <div id="content">
+        <label for="registerform">Register with us</label>
+        <form id="registerform" method="POST">
+            <input id="username" type="text" name="username" placeholder="Username" autofocus required></input>
+            <input id="password" type="password" name="password" placeholder="Password" required></input>
+            <input id="email" type="email" name="email" placeholder="Email" required></input>
+            <button id="register" type="submit" name="register">Register</button>
+        </form>
+    </div>
 </body>
 </html>

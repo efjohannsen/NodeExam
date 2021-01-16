@@ -33,7 +33,7 @@ messageForm.addEventListener("submit", e => {
     socket.emit("send-chat-message", message);
     appendMessage(`You: ${message}`);
     messageInput.value = "";
-    window.scrollTo(0,document.body.scrollHeight);
+    window.scrollTo(0, document.body.scrollHeight);
 });
 
 //funktion der skaber et nyt div element for hver besked og appender det til message-container div.
