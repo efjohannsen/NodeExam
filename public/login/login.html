@@ -13,8 +13,14 @@
         <form id="loginform" method="POST">
             <input id="username" type="text" name="username" placeholder="Username" autofocus required></input>
             <input id="password" type="password" name="password" placeholder="Password" required></input>
-            <button id="login" type="submit" name="login">Login</button>
+            <button id="login" type="submit" name="login" onclick="newUser()">Login</button>
         </form>
     </div>
+
+    <a href="/login" id="logstatus">Log in</a>
+
+    <!-- script der inkluderer io funktionen i chat-client.js -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="login-client.js"></script>
 </body>
 </html>

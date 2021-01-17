@@ -11,24 +11,5 @@
     <div id="content">
         <p>Resource not found.</p>
     </div>
-
-    <ul>
-        <li id="item1">menu item 1</li>
-        <li id="item2">menu item 2</li>
-        <li>menu item 3</li>
-    </ul>
-
-    <button type="submit" onclick="toggle('item2')">Toggle</button>
-
-    <script>
-        function toggle(itemId) {
-            let menuItem = document.getElementById(itemId);
-            if(menuItem.style.display === "none") {
-                menuItem.style.display = "block";
-            } else {
-                menuItem.style.display = "none";
-            }
-        }
-    </script>
 </body>
 </html>
