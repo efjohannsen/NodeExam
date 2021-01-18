@@ -130,7 +130,7 @@ app.post("/login", authLimiter, async (req, res) => {
         if(userResult[0][0] === undefined) {
             return res.status(404).send(`User: ${userName} not found!`);
         } else if (await bcrypt.compare(plainTextPassword, userResult[0][0].password)) {
-            //io.to(users[socket.id]).emit("logged-in");
+            io.sockets.emit("logged-in");
             const id = userResult[0][0].id;
             const user = {name: userName};
             const accessToken = generateAccessToken(user);
@@ -177,6 +177,7 @@ function generateAccessToken(user) {
 app.get("/logout", async (req, res) => {
     refreshToken = req.cookies.refreshToken;
     if(refreshToken !== undefined) {
+        io.sockets.emit("logged-out");
         await pool.execute("DELETE FROM refresh_tokens WHERE token = ?", [refreshToken]);
         res.clearCookie("refreshToken");
         res.clearCookie("accessToken");
@@ -186,7 +187,7 @@ app.get("/logout", async (req, res) => {
     }
 });
 
-//redirect all non-handled endpoints to index.
+//redirect all non-handled endpoints to notfound.
 app.get("/*", (req, res) => {
     return res.sendFile(__dirname + "/public/notfound/notfound.html");
 });
