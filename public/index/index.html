@@ -3,13 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Node.js Exam</title>
+    <title>Node.js Exam Project</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <link type="text/css" rel="stylesheet" href="../main.css">
 </head>
 <body>
+    <div id="top-menu"></div>
     <h1>Welcome!</h1>
     <div id="content">
         <p>Velkommen til mit afsluttende Node.js eksamensprojekt efterår 2020.</p>
+        <img src="../images/nodejs-new-pantone-black.svg" alt="" height="400">
     </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#top-menu").load("../fragments/top-menu.html");
+        });
+    </script>
 </body>
 </html>
