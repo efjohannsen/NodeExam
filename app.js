@@ -41,12 +41,16 @@ app.use(express.json());
 //appen kan parse post objekter som strings eller arrays.
 app.use(express.urlencoded({extended: true}));
 
-//static filer serveres fra public folderen som root.
+//static filer serveres fra public folderen.
 app.use(express.static(__dirname + "/public"));
 
 //HTTP request handler for /index.
 app.get("/index", (req, res) => {
     return res.sendFile(__dirname + "/index/index.html");
+});
+
+app.get("/", (req, res) => {
+    return res.sendFile(__dirname + "/public/index/index.html");
 });
 
 app.get("/register", (req, res) => {
@@ -152,7 +156,7 @@ app.post("/login", authLimiter, async (req, res) => {
 app.get("/refreshtoken", async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
     if(refreshToken === undefined) {
-        return res.status(401).send("Refreshtoken is non-existant. Please log-in!");
+        return res.redirect("/restricted");
     }
     const storedToken = await pool.execute("SELECT token FROM refresh_tokens WHERE token = ?", [refreshToken]);
     if(storedToken[0][0] === undefined) {
@@ -160,11 +164,11 @@ app.get("/refreshtoken", async (req, res) => {
     }
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (error, user) => {
         if(error) {
-            return res.status(403).send("Refreshtoken not validated/expired. Please log-in!");
+            return res.redirect("/restricted");
         }
         const accessToken = generateAccessToken({name: user.name});
         res.cookie("accessToken", accessToken, {httpOnly: true});
-        return res.send("Accesstoken renewed!");
+        return res.redirect("/profile")
     });
 });
 
