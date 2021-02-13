@@ -11,8 +11,7 @@ const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 
 //osana.com
-//hvad har tariq af extensions til node i vscode?
-//npm intellisense
+//nogen sider returnerer en streng, er det ok?
 //hvorfor starter SQL automatisk på AWS?
 
 const users = {};
