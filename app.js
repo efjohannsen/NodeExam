@@ -65,6 +65,20 @@ app.get("/restricted", (req, res) => {
 });
 
 //nedenstående endpoint kræver authorization.
+app.get("/fetch", authenticateToken, async (req, res) => {
+    const users = await pool.execute("SELECT username, email FROM users");
+    if(users[0] === undefined) {
+        return res.status(404).send(`No users found!`);
+    }
+    return res.send(users[0]);
+});
+
+//nedenstående endpoint kræver authorization.
+app.get("/users", authenticateToken, (req, res) => {
+    return res.sendFile(__dirname + "/public/users/users.html");
+});
+
+//nedenstående endpoint kræver authorization.
 app.get("/chat", authenticateToken, (req, res) => {
     return res.sendFile(__dirname + "/public/chat/chat.html");
 });

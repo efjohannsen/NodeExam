@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="../main.css">
+</head>
+<body>
+    <div id="top-menu"></div>
+    <h1>Users</h1>
+    <div id="content" style="padding-left: 400px; padding-right: 400px;">
+        <table class="table" id="users_table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#top-menu").load("../fragments/top-menu.html");
+        });
+
+        $(document).ready(function() {
+            fetch("/fetch")
+            .then(res => res.json())
+            .then(users => {
+                const table = $("#users_table > tbody:last-child");
+                for (let i = 0; i < users.length; i++) {
+                    const user = users[i];
+                    table.before("<tr><td>" + user.username + "</td><td>" + user.email + "</td></tr>");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
