@@ -10,10 +10,6 @@ const cookieParser = require("cookie-parser");
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 
-//osana.com
-//nogen sider returnerer en streng, er det ok?
-//hvorfor starter SQL automatisk på AWS?
-
 const users = {};
 
 //køres når en user connecter til serveren.

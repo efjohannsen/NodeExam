@@ -11,10 +11,30 @@
     <div id="top-menu"></div>
     <h1>Users</h1>
     <div id="content" style="padding-left: 400px; padding-right: 400px;">
-        <table class="table" id="users_table">
+        <table class="table" id="users_table1">
             <thead>
                 <tr>
+                    <th colspan="2">Users of this site:</th>
+                <tr>
+                <tr>
                     <th>Name</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        </br>
+        <table class="table" id="users_table2">
+            <thead>
+                <tr>
+                    <th colspan="5">Randomly generated users:</th>
+                <tr>
+                <tr>
+                    <th>Title</th>
+                    <th>Firstname</th>
+                    <th>Lastname</th>
+                    <th>Country</th>
                     <th>Email</th>
                 </tr>
             </thead>
@@ -33,10 +53,26 @@
             fetch("/fetch")
             .then(res => res.json())
             .then(users => {
-                const table = $("#users_table > tbody:last-child");
                 for (let i = 0; i < users.length; i++) {
                     const user = users[i];
-                    table.before("<tr><td>" + user.username + "</td><td>" + user.email + "</td></tr>");
+                    $("#users_table1").append(`<tr><td>${user.username}</td><td>${user.email}</td></tr>`);
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            const numberOfPeople = 10;
+            fetch(`https://randomuser.me/api/?results=${numberOfPeople}`)
+            .then(res => res.json())
+            .then(users => {
+                for (let i = 0; i < numberOfPeople; i++) {
+                    $("#users_table2").append(`<tr>
+                        <td>${users.results[i].name.title}</td>
+                        <td>${users.results[i].name.first}</td>
+                        <td>${users.results[i].name.last}</td>
+                        <td>${users.results[i].location.country}</td>
+                        <td>${users.results[i].email}</td>
+                    </tr>`);
                 }
             });
         });
