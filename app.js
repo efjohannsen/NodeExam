@@ -177,13 +177,13 @@ app.get("/refreshtoken", async (req, res) => {
         }
         const accessToken = generateAccessToken({name: user.name});
         res.cookie("accessToken", accessToken, {httpOnly: true});
-        return res.redirect("/profile")
+        return res.redirect("/profile");
     });
 });
 
 //function der skaber accesstokens med begrænset levetid.
 function generateAccessToken(user) {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "2m"});
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "15m"});
 }
 
 //logger brugeren ud og fjerner begge cookies.
@@ -194,7 +194,7 @@ app.get("/logout", async (req, res) => {
         await pool.execute("DELETE FROM refresh_tokens WHERE token = ?", [refreshToken]);
         res.clearCookie("refreshToken");
         res.clearCookie("accessToken");
-        return res.send("You are now logged out!"); //status(204) giver error ifht. at nå endpoint.
+        return res.redirect("/login");
     } else {
         return res.send("You are not logged in!");
     }
