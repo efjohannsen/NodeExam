@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <link type="text/css" rel="stylesheet" href="../main.css">
 </head>
-<body onload="loginStatus()">
+<body>
     <div id="top-menu"></div>
     <h1>Login</h1>
     <div id="content">
@@ -19,7 +19,7 @@
         </form>
     </div>
 
-    <!-- script der inkluderer io funktionen i chat-client.js -->
+    <!-- script der inkluderer io funktionen i login-client.js -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="login-client.js"></script>
 
@@ -27,6 +27,39 @@
     <script>
         $(document).ready(function() {
             $("#top-menu").load("../fragments/top-menu.html");
+
+            (function() {
+                if(getCookie("loggedIn") === "true") {
+                    toggle("Log out", "/logout");
+                } else {
+                    toggle("Log in", "/login");
+                }
+            })();
+
+            //returnerer værdien for en navngiven cookie.
+            function getCookie(cname) {
+                const name = cname + "=";
+                const decodedCookie = decodeURIComponent(document.cookie);
+                const ca = decodedCookie.split(";");
+                for(let i = 0; i <ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) == " ") {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            }
+
+            //ændrer status på elementet: #logstatus.
+            function toggle(text, url) {
+                let logbutton = $("#logstatus");
+                console.log(logbutton);
+                logbutton.innerText = text;
+                logbutton.href = url;
+            }
         });
     </script>
 </body>
